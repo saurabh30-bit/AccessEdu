@@ -3,6 +3,22 @@ import type { HistoryLecture, LectureResult } from '@/lib/types';
 const LAST_KEY = 'accessedu:lastLecture';
 const HISTORY_KEY = 'accessedu:history';
 const LECTURE_RESULT_KEY_PREFIX = 'accessedu:lecture:';
+const API_KEY_STORAGE = 'accessedu:geminiApiKey';
+
+export function saveGeminiKey(key: string) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(API_KEY_STORAGE, key);
+}
+
+export function getGeminiKey(): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(API_KEY_STORAGE);
+}
+
+export function clearGeminiKey() {
+  if (typeof window === 'undefined') return;
+  window.localStorage.removeItem(API_KEY_STORAGE);
+}
 
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;

@@ -1,28 +1,19 @@
-export type Flashcard = {
+export interface Flashcard {
   term: string;
   definition: string;
-};
+}
 
-export type KeyTerm = {
-  term: string;
-  definition: string;
-};
-
-export type LectureResult = {
+export interface LectureResult {
   id: string;
-  mode: 'live-irl' | 'online' | 'youtube';
   title: string;
-  dateISO: string;
-  summaryBullets: string[];
-  aiSummary: string;
-  keyTerms: KeyTerm[];
+  date: string;
+  summary: string[];
   flashcards: Flashcard[];
-};
+  mode: 'live' | 'online' | 'youtube';
+}
 
-export type HistoryLecture = {
+export interface HistoryItem {
   id: string;
   title: string;
-  dateISO: string;
-  mode: LectureResult['mode'];
-};
-
+  date: string;
+}
