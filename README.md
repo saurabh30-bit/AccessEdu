@@ -20,7 +20,7 @@ AccessEdu records live lectures, transcribes speech in real time, and uses AI to
 
 | Layer    | Technologies |
 |----------|--------------|
-| Frontend | Next.js 14 (App Router), React, TypeScript, Tailwind CSS, Lucide React |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS v4, Framer Motion, Lucide React |
 | Backend  | FastAPI, Python 3.10+ |
 | AI       | Google Gemini 1.5 Flash |
 | APIs     | Web Speech API, YouTube Transcript API |
@@ -114,18 +114,27 @@ See `.env.example` for a template.
 
 ```
 AccessEdu/
-├── app/
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx              # Main dashboard
-│   └── history/
-│       └── page.tsx          # History view
-├── types/
-│   └── speech.d.ts           # Web Speech API types
+├── src/
+│   ├── app/                  # Next.js App Router
+│   │   ├── layout.tsx
+│   │   ├── page.tsx          # Dashboard (Live / Online / YouTube modes)
+│   │   ├── live/page.tsx     # Live lecture recording
+│   │   ├── results/page.tsx  # Summary + flashcards
+│   │   └── history/page.tsx  # Past lectures
+│   ├── components/           # UI components
+│   │   ├── dashboard/
+│   │   ├── live/
+│   │   ├── results/
+│   │   ├── history/
+│   │   └── ui/
+│   └── lib/
+│       ├── api.ts            # Backend API client
+│       ├── mockApi.ts        # API with mock fallback
+│       ├── storage.ts
+│       └── types.ts
 ├── main.py                   # FastAPI backend
 ├── requirements.txt
-├── package.json
-└── README.md
+└── package.json
 ```
 
 ---
