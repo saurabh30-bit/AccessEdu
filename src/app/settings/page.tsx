@@ -5,9 +5,13 @@ import { motion } from 'framer-motion';
 import { Key, ShieldCheck, Info, CheckCircle2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { saveGeminiKey, getGeminiKey, clearGeminiKey } from '@/lib/storage';
+import { useSettings } from '@/context/SettingsContext';
+import { Languages, Type, Volume2 } from 'lucide-react';
 
 export default function SettingsPage() {
+  const { settings, updateSettings } = useSettings();
   const [apiKey, setApiKey] = useState('');
+
   const [showKey, setShowKey] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [savedKeyExists, setSavedKeyExists] = useState(false);
@@ -126,6 +130,98 @@ export default function SettingsPage() {
               </p>
             </div>
           </motion.div>
+
+          {/* Accessibility Settings */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="glass-card p-8 space-y-8"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <ShieldCheck className="w-5 h-5 text-purple-400" />
+              </div>
+              <h2 className="text-xl font-bold">Accessibility & Preferences</h2>
+            </div>
+
+            <div className="space-y-6">
+              {/* Dyslexia Mode */}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-4 items-center">
+                  <div className="p-2 rounded-lg bg-white/5">
+                    <Type className="w-5 h-5 text-zinc-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm">Dyslexia-Friendly Mode</h4>
+                    <p className="text-xs text-zinc-500">Use OpenDyslexic font for better readability</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => updateSettings({ dyslexiaMode: !settings.dyslexiaMode })}
+                  className={cn(
+                    "w-12 h-6 rounded-full transition-all relative",
+                    settings.dyslexiaMode ? "bg-indigo-600" : "bg-zinc-800"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                    settings.dyslexiaMode ? "left-7" : "left-1"
+                  )} />
+                </button>
+              </div>
+
+              {/* Translation */}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-4 items-center">
+                  <div className="p-2 rounded-lg bg-white/5">
+                    <Languages className="w-5 h-5 text-zinc-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm">Target Translation Language</h4>
+                    <p className="text-xs text-zinc-500">Translate transcripts in real-time</p>
+                  </div>
+                </div>
+                <select 
+                  value={settings.targetLanguage}
+                  onChange={(e) => updateSettings({ targetLanguage: e.target.value })}
+                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none"
+                >
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Chinese">Chinese</option>
+                </select>
+              </div>
+
+              {/* TTS */}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-4 items-center">
+                  <div className="p-2 rounded-lg bg-white/5">
+                    <Volume2 className="w-5 h-5 text-zinc-400" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm">Voice Synthesis (TTS)</h4>
+                    <p className="text-xs text-zinc-500">Enable audio reading for summaries</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => updateSettings({ ttsEnabled: !settings.ttsEnabled })}
+                  className={cn(
+                    "w-12 h-6 rounded-full transition-all relative",
+                    settings.ttsEnabled ? "bg-indigo-600" : "bg-zinc-800"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                    settings.ttsEnabled ? "left-7" : "left-1"
+                  )} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
 
         <div className="space-y-6">

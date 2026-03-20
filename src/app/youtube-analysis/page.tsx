@@ -15,8 +15,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { mockYoutubeResult } from '@/lib/mockData';
+import { AITutorSidebar } from '@/components/ai-tutor/AITutorSidebar';
 
 export default function YoutubeAnalysisPage() {
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const videoId = searchParams.get('v');
@@ -218,6 +220,7 @@ export default function YoutubeAnalysisPage() {
           </div>
         </div>
       </div>
+      <AITutorSidebar />
     </div>
   );
 }

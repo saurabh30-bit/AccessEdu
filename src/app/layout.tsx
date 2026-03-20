@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell/AppShell";
+import { SettingsProvider } from "@/context/SettingsContext";
 
 const inter = Inter({ subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
   title: "AccessEdu – AI Classroom Equalizer",
@@ -18,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <AppShell>{children}</AppShell>
+        <SettingsProvider>
+          <AppShell>{children}</AppShell>
+        </SettingsProvider>
       </body>
     </html>
   );

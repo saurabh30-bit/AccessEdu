@@ -46,4 +46,16 @@ body {
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
   }
+
+  .dyslexia-font {
+    font-family: 'OpenDyslexic', sans-serif !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+  }
 }
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/OpenDyslexic-Regular.otf');
+}
+

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Video, Youtube, ArrowRight } from 'lucide-react';
+import { Mic, Video, Youtube, ArrowRight, FileUp, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -36,22 +36,52 @@ const features = [
     href: "/youtube-analysis",
     isInput: true,
   },
+  {
+    id: 'file',
+    title: "File Upload Mode",
+    description: "Upload local MP3, MP4 or PDF files for AI analysis.",
+    icon: FileUp,
+    color: "bg-blue-500",
+    buttonText: "Upload File",
+    href: "/live?mode=file",
+  },
+  {
+    id: 'collab',
+    title: "Shared Study Room",
+    description: "Join a session code to study with classmates in real-time.",
+    icon: Users,
+    color: "bg-emerald-500",
+    buttonText: "Join Room",
+    href: "/live?mode=collab",
+    isJoinInput: true,
+  },
 ];
 
 export default function DashboardPage() {
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [sessionCode, setSessionCode] = useState('');
   const router = useRouter();
 
   const handleYoutubeAnalyze = (e: React.FormEvent) => {
     e.preventDefault();
     if (!youtubeUrl.trim()) return;
     
-    // Extract video ID if possible, or just pass the URL
-    const urlParams = new URLSearchParams(new URL(youtubeUrl).search);
-    const videoId = urlParams.get('v') || youtubeUrl.split('/').pop();
-    
-    router.push(`/youtube-analysis?url=${encodeURIComponent(youtubeUrl)}&v=${videoId}`);
+    try {
+      const url = new URL(youtubeUrl);
+      const videoId = url.searchParams.get('v') || youtubeUrl.split('/').pop();
+      router.push(`/youtube-analysis?url=${encodeURIComponent(youtubeUrl)}&v=${videoId}`);
+    } catch (e) {
+      // Handle invalid URL
+      router.push(`/youtube-analysis?v=dQw4w9WgXcQ`); // Fallback mock
+    }
   };
+
+  const handleJoinRoom = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sessionCode.trim()) return;
+    router.push(`/live?mode=online&room=${sessionCode}`);
+  };
+
 
   return (
     <div className="max-w-6xl mx-auto pt-12 space-y-16">
@@ -107,18 +137,39 @@ export default function DashboardPage() {
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
+            ) : feature.isJoinInput ? (
+              <form onSubmit={handleJoinRoom} className="space-y-3">
+                <input 
+                  type="text" 
+                  value={sessionCode}
+                  onChange={(e) => setSessionCode(e.target.value)}
+                  placeholder="Enter Room Code (e.g. AB12)"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all text-white"
+                />
+                <button 
+                  type="submit"
+                  disabled={!sessionCode.trim()}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+                >
+                  {feature.buttonText}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
             ) : (
               <Link 
                 href={feature.href}
                 className={cn(
                   "w-full text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg mt-auto",
-                  feature.id === 'live' ? "bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20" : "bg-purple-600 hover:bg-purple-500 shadow-purple-500/20"
+                  feature.id === 'live' ? "bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20" : 
+                  feature.id === 'file' ? "bg-blue-600 hover:bg-blue-500 shadow-blue-500/20" :
+                  "bg-purple-600 hover:bg-purple-500 shadow-purple-500/20"
                 )}
               >
                 {feature.buttonText}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             )}
+
           </motion.div>
         ))}
       </section>

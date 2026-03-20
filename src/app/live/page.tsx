@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, Square, Loader2, BookOpen, Sparkles, LayoutList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { AITutorSidebar } from '@/components/ai-tutor/AITutorSidebar';
+import { useSettings } from '@/context/SettingsContext';
+import { MessageCircle, Highlighter, StickyNote } from 'lucide-react';
 
 const mockTranscriptData = [
   "Welcome everyone to today's session on Quantum Computing.",
@@ -23,13 +26,27 @@ const mockTranscriptData = [
 export default function LiveLecturePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { settings } = useSettings();
   const mode = searchParams.get('mode') || 'live';
   
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState<string[]>([]);
   const [currentSummary, setCurrentSummary] = useState("Waiting for lecture to begin...");
   const [keyTerms, setKeyTerms] = useState<{term: string, def: string}[]>([]);
+  const [highlights, setHighlights] = useState<number[]>([]);
+  const [notes, setNotes] = useState<Record<number, string>>({});
+  const [activeNoteIdx, setActiveNoteIdx] = useState<number | null>(null);
   const transcriptEndRef = useRef<HTMLDivElement>(null);
+
+  const toggleHighlight = (idx: number) => {
+    setHighlights(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
+  };
+
+  const getTranslatedText = (text: string) => {
+    if (settings.targetLanguage === 'English') return text;
+    return `[${settings.targetLanguage}] ${text} (Translated)`;
+  };
+
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -66,10 +83,17 @@ export default function LiveLecturePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {mode === 'youtube' ? 'YouTube Analysis' : mode === 'online' ? 'Online Session' : 'Live Recording'}
+            {mode === 'youtube' ? 'YouTube Analysis' : 
+             mode === 'online' ? 'Online Session' : 
+             mode === 'file' ? 'File Analysis' :
+             mode === 'collab' ? 'Shared Study Room' :
+             'Live Recording'}
           </h1>
-          <p className="text-zinc-400 mt-1">Real-time AI assistance is active</p>
+          <p className="text-zinc-400 mt-1">
+            {mode === 'collab' ? `Room Code: ${searchParams.get('room') || 'AB12'}` : 'Real-time AI assistance is active'}
+          </p>
         </div>
+
         
         <div className="flex items-center gap-4">
           {!isRecording && transcript.length > 0 && (
@@ -128,14 +152,75 @@ export default function LiveLecturePage() {
                     key={idx}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="p-4 rounded-2xl bg-white/5 border border-white/5"
+                    className={cn(
+                      "p-4 rounded-2xl border transition-all group relative",
+                      highlights.includes(idx) 
+                        ? "bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_20px_-10px_rgba(234,179,8,0.3)]" 
+                        : "bg-white/5 border-white/5 hover:border-white/10"
+                    )}
                   >
-                    <p className="text-zinc-200 leading-relaxed">{line}</p>
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="space-y-2 flex-grow">
+                        <p className="text-zinc-200 leading-relaxed">{getTranslatedText(line)}</p>
+                        {notes[idx] && (
+                          <div className="p-3 rounded-lg bg-indigo-500/5 border border-indigo-500/10 flex gap-2 items-start">
+                            <StickyNote className="w-3 h-3 text-indigo-400 mt-1 flex-shrink-0" />
+                            <p className="text-xs text-indigo-300 italic">{notes[idx]}</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button 
+                          onClick={() => toggleHighlight(idx)}
+                          className={cn(
+                            "p-1.5 rounded-lg transition-colors",
+                            highlights.includes(idx) ? "bg-yellow-500/20 text-yellow-400" : "hover:bg-white/10 text-zinc-500 hover:text-zinc-300"
+                          )}
+                        >
+                          <Highlighter className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => setActiveNoteIdx(activeNoteIdx === idx ? null : idx)}
+                          className={cn(
+                            "p-1.5 rounded-lg transition-colors",
+                            notes[idx] ? "bg-indigo-500/20 text-indigo-400" : "hover:bg-white/10 text-zinc-500 hover:text-zinc-300"
+                          )}
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {activeNoteIdx === idx && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 flex gap-2"
+                      >
+                        <input 
+                          type="text"
+                          autoFocus
+                          placeholder="Add a personal note..."
+                          className="flex-grow bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+                          value={notes[idx] || ''}
+                          onChange={(e) => setNotes({ ...notes, [idx]: e.target.value })}
+                          onKeyDown={(e) => e.key === 'Enter' && setActiveNoteIdx(null)}
+                        />
+                        <button 
+                          onClick={() => setActiveNoteIdx(null)}
+                          className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold"
+                        >
+                          Save
+                        </button>
+                      </motion.div>
+                    )}
                   </motion.div>
                 ))}
               </AnimatePresence>
               <div ref={transcriptEndRef} />
             </div>
+
 
             {/* Mic Animation Overlay */}
             {!isRecording && transcript.length === 0 && (
@@ -199,6 +284,7 @@ export default function LiveLecturePage() {
           </div>
         </div>
       </div>
+      <AITutorSidebar />
     </div>
   );
 }
