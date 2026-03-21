@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { mockYoutubeResult } from '@/lib/mockData';
 import { AITutorSidebar } from '@/components/ai-tutor/AITutorSidebar';
 
-export default function YoutubeAnalysisPage() {
+export function YoutubeAnalysisPage() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -222,5 +222,20 @@ export default function YoutubeAnalysisPage() {
       </div>
       <AITutorSidebar />
     </div>
+  );
+}
+
+export default function YoutubeAnalysisPageWrapper() {
+  return (
+    <React.Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      </div>
+    }>
+      <YoutubeAnalysisPage />
+    </React.Suspense>
   );
 }

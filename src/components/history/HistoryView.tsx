@@ -12,7 +12,7 @@ import {
   setLastLecture,
 } from '@/lib/storage';
 import { getHistory } from '@/lib/api';
-import type { HistoryLecture, LectureResult } from '@/lib/types';
+import type { HistoryItem, LectureResult } from '@/lib/types';
 import { buildMockResult } from '@/lib/mockData';
 
 function formatDate(iso: string) {
@@ -32,7 +32,7 @@ function HistoryCard({
   onView,
   loading,
 }: {
-  lecture: HistoryLecture;
+  lecture: HistoryItem;
   onView: () => void;
   loading?: boolean;
 }) {
@@ -84,9 +84,9 @@ function HistoryCard({
 
 export default function HistoryView() {
   const router = useRouter();
-  const [history, setHistory] = useState<HistoryLecture[] | null>(null);
+  const [history, setHistory] = useState<HistoryItem[] | null>(null);
 
-  const seedHistory = useMemo<HistoryLecture[]>(
+  const seedHistory = useMemo<HistoryItem[]>(
     () => [
       {
         id: 'seed_1',
@@ -131,7 +131,7 @@ export default function HistoryView() {
   useEffect(() => {
     const local = getHistoryLectures();
     getHistory().then((apiItems) => {
-      const fromApi: HistoryLecture[] = apiItems.map((a) => ({
+      const fromApi: HistoryItem[] = apiItems.map((a) => ({
         id: a.id,
         title: a.title,
         dateISO: a.date,
@@ -144,7 +144,7 @@ export default function HistoryView() {
     });
   }, [seedHistory]);
 
-  async function handleView(lecture: HistoryLecture) {
+  async function handleView(lecture: HistoryItem) {
     // If this lecture was saved for real, load its full result.
     const saved = getLectureResultById(lecture.id);
     const full: LectureResult = saved
@@ -183,6 +183,7 @@ export default function HistoryView() {
                 <HistoryCard
                   lecture={seedHistory[0]}
                   loading
+                  onView={() => {}}
                 />
               </div>
             ))}

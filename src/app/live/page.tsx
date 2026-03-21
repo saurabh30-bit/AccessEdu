@@ -23,7 +23,7 @@ const mockTranscriptData = [
   "However, error correction remains one of our biggest challenges today."
 ];
 
-export default function LiveLecturePage() {
+export function LiveLecturePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { settings } = useSettings();
@@ -286,5 +286,20 @@ export default function LiveLecturePage() {
       </div>
       <AITutorSidebar />
     </div>
+  );
+}
+
+export default function LivePage() {
+  return (
+    <React.Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      </div>
+    }>
+      <LiveLecturePage />
+    </React.Suspense>
   );
 }

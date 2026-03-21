@@ -1,4 +1,4 @@
-import type { HistoryLecture, LectureResult } from '@/lib/types';
+import type { HistoryItem, LectureResult } from '@/lib/types';
 
 const LAST_KEY = 'accessedu:lastLecture';
 const HISTORY_KEY = 'accessedu:history';
@@ -45,15 +45,15 @@ export function getLastLecture(): LectureResult | null {
   return readJson<LectureResult | null>(LAST_KEY, null);
 }
 
-export function getHistoryLectures(): HistoryLecture[] {
-  return readJson<HistoryLecture[]>(HISTORY_KEY, []);
+export function getHistoryLectures(): HistoryItem[] {
+  return readJson<HistoryItem[]>(HISTORY_KEY, []);
 }
 
-export function addLectureToHistory(lecture: LectureResult): HistoryLecture[] {
+export function addLectureToHistory(lecture: LectureResult): HistoryItem[] {
   const existing = getHistoryLectures();
   // Also persist full results so "View Details" can load the same lecture later.
   writeJson(LECTURE_RESULT_KEY_PREFIX + lecture.id, lecture);
-  const next: HistoryLecture = {
+  const next: HistoryItem = {
     id: lecture.id,
     title: lecture.title,
     dateISO: lecture.dateISO,

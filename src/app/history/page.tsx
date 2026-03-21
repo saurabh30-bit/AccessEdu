@@ -48,7 +48,7 @@ export default function HistoryPage() {
                 <h3 className="text-xl font-bold leading-tight group-hover:text-indigo-400 transition-colors">
                   {lecture.title}
                 </h3>
-                <p className="text-zinc-500 text-sm">{lecture.date}</p>
+                <p className="text-zinc-500 text-sm">{lecture.dateISO}</p>
               </div>
 
               <Link 

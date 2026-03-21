@@ -47,7 +47,7 @@ export async function analyzeYoutube(
   } catch {
     await wait(800);
     const title = safeTitleFromYoutubeLink(youtubeLink);
-    return buildMockResult({ mode: 'youtube', title });
+    return buildMockResult({ mode: 'youtube', title, dateISO: new Date().toISOString() });
   }
 }
 
@@ -66,7 +66,7 @@ export async function generateResultsFromLive(
   }
   await wait(1200);
   const title = opts.title ?? (mode === 'online' ? 'Online Lecture' : 'Live IRL Lecture');
-  return buildMockResult({ mode, title: `${title}${transcriptSoFar ? ' – Session' : ''}` });
+  return buildMockResult({ mode, title: `${title}${transcriptSoFar ? ' – Session' : ''}`, dateISO: new Date().toISOString() });
 }
 
 export async function saveLectureToHistory(

@@ -10,7 +10,7 @@ try:
 except ImportError:
     pass
 
-import google.generativeai as genai
+import google.genai as genai
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -33,11 +33,7 @@ app.add_middleware(
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
 if GEMINI_KEY == "YOUR_GEMINI_API_KEY":
     logger.warning("GEMINI_API_KEY not set. Set it in env for AI features.")
-genai.configure(api_key=GEMINI_KEY)
-model = genai.GenerativeModel(
-    "gemini-1.5-flash",
-    generation_config=genai.GenerationConfig(response_mime_type="application/json"),
-)
+client = genai.Client(api_key=GEMINI_KEY)
 
 # --- Pydantic Models ---
 
@@ -119,7 +115,10 @@ Rules:
 
 Transcript:
 """
-        response = model.generate_content(prompt + truncated)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt + truncated
+        )
         print("Gemini response received.")
         return _parse_gemini_json(response.text)
     except Exception as e:
@@ -245,5 +244,9 @@ def root():
 
 if __name__ == "__main__":
     import uvicorn
+    import os
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    host = os.environ.get("HOST", "0.0.0.0")
+
+    uvicorn.run(app, host=host, port=port)

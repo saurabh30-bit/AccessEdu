@@ -22,18 +22,23 @@ export interface LectureResult {
   id: string;
   title: string;
   date: string;
+  dateISO: string;
   summary: string[];
+  summaryBullets: string[];
+  aiSummary: string;
+  keyTerms: Flashcard[];
   flashcards: Flashcard[];
   quiz?: QuizQuestion[];
   mindMap?: MindMapNode[];
-  mode: 'live' | 'online' | 'youtube' | 'file';
+  mode: 'live' | 'live-irl' | 'online' | 'youtube' | 'file';
   transcript?: string;
 }
 
 export interface HistoryItem {
   id: string;
   title: string;
-  date: string;
+  dateISO: string;
+  mode: LectureResult["mode"];
 }
 
 export interface AppSettings {

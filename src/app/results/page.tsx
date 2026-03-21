@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Save, Share2, Download, RotateCcw, ChevronLeft, ChevronRight, LayoutList, BookOpen, BrainCircuit, GraduationCap } from 'lucide-react';
+import { Save, Share2, Download, RotateCcw, ChevronLeft, ChevronRight, LayoutList, BookOpen, BrainCircuit, GraduationCap, CheckCircle2 } from 'lucide-react';
 import { mockLectureResult } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
