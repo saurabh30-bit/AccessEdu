@@ -1,0 +1,16 @@
+name: accessedu-backend
+services:
+- name: api
+  source_dir: /
+  github:
+    repo: saurabh30-bit/AccessEdu
+    branch: main
+  run_command: python AccessEdu_Project.py
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  env:
+  - key: PORT
+    value: 8000
+  - key: GEMINI_API_KEY
+    value: AIzaSyDdummyKeyForTesting

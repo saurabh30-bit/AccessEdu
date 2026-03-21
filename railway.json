@@ -1,0 +1,9 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "python AccessEdu_Project.py",
+    "healthcheckPath": "/api/test"
+  }
+}
