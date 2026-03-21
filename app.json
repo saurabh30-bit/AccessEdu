@@ -1,0 +1,16 @@
+{
+  "name": "AccessEdu",
+  "description": "Real-time lecture transcription and AI-powered summarization for accessible education",
+  "keywords": ["education", "ai", "transcription", "accessibility"],
+  "website": "https://github.com/saurabh30-bit/AccessEdu",
+  "repository": "https://github.com/saurabh30-bit/AccessEdu",
+  "logo": "https://raw.githubusercontent.com/saurabh30-bit/AccessEdu/main/public/logo.png",
+  "success_url": "/",
+  "stack": "container",
+  "env": {
+    "GEMINI_API_KEY": {
+      "description": "Google Gemini API key for AI features",
+      "required": true
+    }
+  }
+}
